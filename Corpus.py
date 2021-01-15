@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jan 15 15:25:00 2021
-
-@author: Chloé
-"""
 
 ################################## Importation et Déclaration des classes ##################################
 from Author import Author
@@ -94,6 +88,11 @@ class Corpus():
         
        
     
+    
+    
+
+    
+
 
 import praw
 
@@ -157,7 +156,6 @@ Edge_info = Info_Graph.get_coll()
 for k in Edge_info.keys():
     G.add_edge(Edge_info[k][0],Edge_info[k][1],Edge_info[k][2],width = 2 * Edge_info[k][2])
     
-    
 ######## PARTIE GRAPHE    #####################
 
 #Pour afficher le nombre de co-occurences : stockage des valeurs
@@ -168,16 +166,16 @@ nwork.set_node_attributes(G, name='cooccurence', values=degree)
 title = 'Graphe des co-occurences des mots '
 
 #Affichage des informations quand on survole le noeud
-HOVER_TOOLTIPS = [("Mot", "@index"),("Nombre de fois de co-occurences","@cooccurence")]
+HOVER_TOOLTIPS = [("Mot", "@index"),("Nombre de fois que le mot est en co-occurence","@cooccurence")]
 
 #Création du plot — set dimensions, toolbar, et titre
-plot = figure(tooltips = HOVER_TOOLTIPS, tools="pan,wheel_zoom,save,reset",x_range=Range1d(-10.1, 10.1), y_range=Range1d(-10.1, 10.1), active_scroll='wheel_zoom', title=title)
+plot = figure(tooltips = HOVER_TOOLTIPS, tools="pan,wheel_zoom,save,reset",x_range=Range1d(-10.1, 10.1), y_range=Range1d(-10.1, 10.1), active_scroll='wheel_zoom', title=title,plot_width=1600, plot_height=900)
 
 #Création d'un graphe
 network_graph = from_networkx(G, nwork.spring_layout, scale=10, center=(0, 0))
 	
 #### Mise en forme du graphe 
-
+network_graph.node_renderer.glyph = Circle(size=10)
 #Subrillance des liens et des noeuds
 network_graph.selection_policy = NodesAndLinkedEdges()
 network_graph.inspection_policy = NodesAndLinkedEdges()
@@ -194,43 +192,4 @@ save(plot, filename=f"{title}.html")
 
 #########################################################
 
-# Donnees des autres exercices non utile pour notre projet
-url = 'http://export.arxiv.org/api/query?search_query=all:covid&start=0&max_results=100'
-data =  urllib.request.urlopen(url).read().decode()
-docs = xmltodict.parse(data)['feed']['entry']
 
-for i in docs:
-    datet = dt.datetime.strptime(i['published'], '%Y-%m-%dT%H:%M:%SZ')
-    try:
-        author = [aut['name'] for aut in i['author']][0]
-    except:
-        author = i['author']['name']
-    txt = i['title']+ ". " + i['summary']
-    txt = txt.replace('\n', ' ')
-    txt = txt.replace('\r', ' ')
-    doc = Document(datet,
-                   i['title'],
-                   author,
-                   txt,
-                   i['id']
-                   )
-    corpus.add_doc(doc)
-
-#print("Création du corpus, %d documents et %d auteurs" % (corpus.ndoc,corpus.naut))
-
-#print()
-
-#print("Corpus trié par titre (4 premiers)")
-res = corpus.sort_title(4)
-#print(res)
-    
-#print()
-
-#print("Corpus trié par date (4 premiers)")
-res = corpus.sort_date(4)
-#print(res)
-
-#print()
-
-#print("Enregistrement du corpus sur le disque...")
-corpus.save("Corona.crp")
