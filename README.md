@@ -1,5 +1,5 @@
 # Prog_Avancee
-Travail fait en collaboration avec Chloé Carrié
+Travail fait en collaboration entre Chloé Carrié et Baptiste Esposito
 
 
 Pour lancer le code, il faut il faut executer le fichier " Corpus.py " pour créer la recherche de corpus et la création de graphe.
