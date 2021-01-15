@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jan 15 13:56:46 2021
+
+@author: Chloé
+"""
 
 ################################## Déclaration des classes ##################################
 from Author import Author
@@ -11,6 +17,15 @@ from Projet import Projet
 import matplotlib.pyplot as plt
 import numpy as np
 
+import numpy as np
+from bokeh.io import output_notebook, show, save
+from bokeh.plotting import figure
+from bokeh.plotting import from_networkx
+from bokeh.io import output_notebook, show, save
+from bokeh.models import Range1d, Circle, ColumnDataSource, MultiLine
+from bokeh.palettes import Blues8, Reds8, Purples8, Oranges8, Viridis8, Spectral8
+from bokeh.transform import linear_cmap
+from bokeh.models import EdgesAndLinkedNodes, NodesAndLinkedEdges
 
 
 class Corpus():
@@ -142,9 +157,23 @@ Edge_info = Info_Graph.get_coll()
 
 for k in Edge_info.keys():
 	G.add_edge(Edge_info[k][0],Edge_info[k][1],Edge_info[k][2])
+
+#Titre du grahe
+title = 'Graphe des co-occurences des mots '
+
+#Informations quand on survole le noeud
+HOVER_TOOLTIPS = [("Source", "@index")]
+
+#Création du plot — set dimensions, toolbar, et titre
+plot = figure(tooltips = HOVER_TOOLTIPS, tools="pan,wheel_zoom,save,reset",x_range=Range1d(-10.1, 10.1), y_range=Range1d(-10.1, 10.1), active_scroll='wheel_zoom', title=title)
+
+#Création d'un graphe
+network_graph = from_networkx(G, nwork.spring_layout, scale=10, center=(0, 0))
 	
-nwork.draw(G)
-plt.show()
+#ORendu final
+plot.renderers.append(network_graph)
+
+show(plot)
 
 
 # Donnees des autres exercices non utile pour notre projet
@@ -187,8 +216,3 @@ print()
 
 print("Enregistrement du corpus sur le disque...")
 corpus.save("Corona.crp")
-
-
-
-
-
