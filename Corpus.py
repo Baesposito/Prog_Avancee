@@ -1,11 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jan 15 13:56:46 2021
 
-@author: Chloé
-"""
-
-################################## Déclaration des classes ##################################
+################################## Importation et Déclaration des classes ##################################
 from Author import Author
 from Document import Document
 import re
@@ -28,6 +22,7 @@ from bokeh.transform import linear_cmap
 from bokeh.models import EdgesAndLinkedNodes, NodesAndLinkedEdges
 
 
+# classe Corpus
 class Corpus():
     
     def __init__(self,name):
@@ -137,27 +132,31 @@ for post in hot_posts:
 
 # on enleve les doublons des textes et pas du corpus
 for i in range(len(All_words)):
-	for j in range(len(All_words[i])):
-		All_words[i][j] = All_words[i][j].lower() 
-	All_words[i] = list(set(All_words[i]))
-	#on enleve aussi l'element vide qui est present dans chaque corpus.
-	All_words[i].remove('')
+    for j in range(len(All_words[i])):
+        All_words[i][j] = All_words[i][j].lower() 
+    All_words[i] = list(set(All_words[i]))
+    #on enleve aussi l'element vide qui est present dans chaque corpus.
+    All_words[i].remove('')
 
 
 #creation des donnees pour la creation du graphe
-Info_Graph = Projet()
-Info_Graph.combinaison_mot(All_words)
+Info_Graph = Projet(All_words)
 
+# creation du multi graphe
 G = nwork.MultiDiGraph()
+# on forme les noeuds
 for m in All_words:
-	for mot in m:
-		if(not(mot in G.nodes())):
-			G.add_node(mot)
+    for mot in m:
+        if(not(mot in G.nodes())):
+            G.add_node(mot, size = 10)
+
+# ici on fait les aretes
 Edge_info = Info_Graph.get_coll()
 
 for k in Edge_info.keys():
-	G.add_edge(Edge_info[k][0],Edge_info[k][1],Edge_info[k][2])
-
+    G.add_edge(Edge_info[k][0],Edge_info[k][1],Edge_info[k][2],width = 2 * Edge_info[k][2])
+    
+# Ici on fait l'affichage du graphe    #####################
 #Titre du grahe
 title = 'Graphe des co-occurences des mots '
 
@@ -174,7 +173,7 @@ network_graph = from_networkx(G, nwork.spring_layout, scale=10, center=(0, 0))
 plot.renderers.append(network_graph)
 
 show(plot)
-
+#########################################################
 
 # Donnees des autres exercices non utile pour notre projet
 url = 'http://export.arxiv.org/api/query?search_query=all:covid&start=0&max_results=100'
@@ -198,21 +197,26 @@ for i in docs:
                    )
     corpus.add_doc(doc)
 
-print("Création du corpus, %d documents et %d auteurs" % (corpus.ndoc,corpus.naut))
+#print("Création du corpus, %d documents et %d auteurs" % (corpus.ndoc,corpus.naut))
 
-print()
+#print()
 
-print("Corpus trié par titre (4 premiers)")
+#print("Corpus trié par titre (4 premiers)")
 res = corpus.sort_title(4)
-print(res)
+#print(res)
     
-print()
+#print()
 
-print("Corpus trié par date (4 premiers)")
+#print("Corpus trié par date (4 premiers)")
 res = corpus.sort_date(4)
-print(res)
+#print(res)
 
-print()
+#print()
 
-print("Enregistrement du corpus sur le disque...")
+#print("Enregistrement du corpus sur le disque...")
 corpus.save("Corona.crp")
+
+
+
+
+
