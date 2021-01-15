@@ -6,3 +6,10 @@ Pour lancer le code, il faut il faut executer le fichier " Corpus.py " pour cré
 
 Il y a aussi un fichier HTML qui est une représentation d'un graphe fait sur le corpus "Coronavirus" de Reddit.
 C'est un exemple fonctionnel de notre projet.
+
+librairie à télécharger :
+-numpy
+-bokeh
+-networkx
+-matplotlib
+-pickel
