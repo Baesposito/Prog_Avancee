@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jan 15 15:25:00 2021
+
+@author: Chloé
+"""
 
 ################################## Importation et Déclaration des classes ##################################
 from Author import Author
@@ -88,11 +94,6 @@ class Corpus():
         
        
     
-    
-    
-
-    
-
 
 import praw
 
@@ -156,12 +157,18 @@ Edge_info = Info_Graph.get_coll()
 for k in Edge_info.keys():
     G.add_edge(Edge_info[k][0],Edge_info[k][1],Edge_info[k][2],width = 2 * Edge_info[k][2])
     
-# Ici on fait l'affichage du graphe    #####################
+    
+######## PARTIE GRAPHE    #####################
+
+#Pour afficher le nombre de co-occurences : stockage des valeurs
+degree = dict(nwork.degree(G))
+nwork.set_node_attributes(G, name='cooccurence', values=degree)
+
 #Titre du grahe
 title = 'Graphe des co-occurences des mots '
 
-#Informations quand on survole le noeud
-HOVER_TOOLTIPS = [("Source", "@index")]
+#Affichage des informations quand on survole le noeud
+HOVER_TOOLTIPS = [("Mot", "@index"),("Nombre de fois de co-occurences","@cooccurence")]
 
 #Création du plot — set dimensions, toolbar, et titre
 plot = figure(tooltips = HOVER_TOOLTIPS, tools="pan,wheel_zoom,save,reset",x_range=Range1d(-10.1, 10.1), y_range=Range1d(-10.1, 10.1), active_scroll='wheel_zoom', title=title)
@@ -169,10 +176,22 @@ plot = figure(tooltips = HOVER_TOOLTIPS, tools="pan,wheel_zoom,save,reset",x_ran
 #Création d'un graphe
 network_graph = from_networkx(G, nwork.spring_layout, scale=10, center=(0, 0))
 	
-#ORendu final
+#### Mise en forme du graphe 
+
+#Subrillance des liens et des noeuds
+network_graph.selection_policy = NodesAndLinkedEdges()
+network_graph.inspection_policy = NodesAndLinkedEdges()
+
+
+####  Affichage du graphe 
+
 plot.renderers.append(network_graph)
 
 show(plot)
+
+#Pour enregistrer le graphe 
+save(plot, filename=f"{title}.html")
+
 #########################################################
 
 # Donnees des autres exercices non utile pour notre projet
@@ -215,8 +234,3 @@ res = corpus.sort_date(4)
 
 #print("Enregistrement du corpus sur le disque...")
 corpus.save("Corona.crp")
-
-
-
-
-
